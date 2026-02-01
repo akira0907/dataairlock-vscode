@@ -1,0 +1,223 @@
+{
+  "name": "dataairlock",
+  "displayName": "DataAirlock",
+  "description": "Japanese PII pseudonymization for VSCode - ローカルで個人情報を仮名化",
+  "version": "1.0.1",
+  "publisher": "dataairlock",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/akira0907/dataairlock-vscode"
+  },
+  "icon": "logo_dataairlock.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dataairlock.anonymizeSelection",
+        "title": "選択範囲を仮名化",
+        "category": "DataAirlock"
+      },
+      {
+        "command": "dataairlock.anonymizeDocument",
+        "title": "ドキュメント全体を仮名化",
+        "category": "DataAirlock"
+      },
+      {
+        "command": "dataairlock.deanonymizeSelection",
+        "title": "選択範囲を復元",
+        "category": "DataAirlock"
+      },
+      {
+        "command": "dataairlock.deanonymizeDocument",
+        "title": "ドキュメント全体を復元",
+        "category": "DataAirlock"
+      },
+      {
+        "command": "dataairlock.showMapping",
+        "title": "Show Mapping",
+        "category": "DataAirlock"
+      },
+      {
+        "command": "dataairlock.clearMapping",
+        "title": "Clear Mapping",
+        "category": "DataAirlock"
+      },
+      {
+        "command": "dataairlock.anonymizeFile",
+        "title": "ファイルを仮名化",
+        "category": "DataAirlock"
+      },
+      {
+        "command": "dataairlock.anonymizeFolder",
+        "title": "フォルダを仮名化",
+        "category": "DataAirlock"
+      },
+      {
+        "command": "dataairlock.deanonymizeFile",
+        "title": "ファイルを復元",
+        "category": "DataAirlock"
+      },
+      {
+        "command": "dataairlock.deanonymizeFolder",
+        "title": "フォルダを復元",
+        "category": "DataAirlock"
+      },
+      {
+        "command": "dataairlock.applyMapping",
+        "title": "マッピングを適用（成果物の復元）",
+        "category": "DataAirlock"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "dataairlock.anonymizeFile",
+          "when": "!explorerResourceIsFolder",
+          "group": "dataairlock@1"
+        },
+        {
+          "command": "dataairlock.anonymizeFolder",
+          "when": "explorerResourceIsFolder",
+          "group": "dataairlock@1"
+        },
+        {
+          "command": "dataairlock.deanonymizeFile",
+          "when": "!explorerResourceIsFolder",
+          "group": "dataairlock@2"
+        },
+        {
+          "command": "dataairlock.deanonymizeFolder",
+          "when": "explorerResourceIsFolder",
+          "group": "dataairlock@2"
+        },
+        {
+          "command": "dataairlock.applyMapping",
+          "when": "!explorerResourceIsFolder",
+          "group": "dataairlock@3"
+        },
+        {
+          "command": "dataairlock.applyMapping",
+          "when": "explorerResourceIsFolder",
+          "group": "dataairlock@3"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "dataairlock.anonymizeSelection",
+        "key": "ctrl+alt+p",
+        "mac": "ctrl+alt+p",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "dataairlock.deanonymizeSelection",
+        "key": "ctrl+alt+r",
+        "mac": "ctrl+alt+r",
+        "when": "editorTextFocus"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "dataairlock.mappingView",
+          "name": "PII Mappings"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "DataAirlock",
+      "properties": {
+        "dataairlock.patterns.name.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Japanese name detection (日本語氏名の検出)"
+        },
+        "dataairlock.patterns.phone.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable phone number detection (電話番号の検出)"
+        },
+        "dataairlock.patterns.email.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable email detection (メールアドレスの検出)"
+        },
+        "dataairlock.patterns.address.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable address detection (住所の検出)"
+        },
+        "dataairlock.patterns.mynumber.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable My Number detection (マイナンバーの検出)"
+        },
+        "dataairlock.patterns.dob.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable birthdate detection (生年月日の検出)"
+        },
+        "dataairlock.highlightColor": {
+          "type": "string",
+          "default": "rgba(255, 200, 0, 0.3)",
+          "description": "PII highlight background color"
+        },
+        "dataairlock.highlight.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable PII highlighting in editor"
+        },
+        "dataairlock.fileExtensions": {
+          "type": "array",
+          "default": [".txt", ".md", ".csv", ".json", ".xml", ".html", ".htm", ".log", ".py", ".js", ".ts", ".jsx", ".tsx", ".java", ".c", ".cpp", ".h", ".rb", ".go", ".rs", ".swift"],
+          "description": "ファイル/フォルダ仮名化の対象拡張子"
+        },
+        "dataairlock.outputFolderSuffix": {
+          "type": "string",
+          "default": "_pseudonymized",
+          "description": "出力フォルダ名のサフィックス"
+        },
+        "dataairlock.backupDirectory": {
+          "type": "string",
+          "default": "~/DataAirlock/backups",
+          "description": "元データのバックアップ保存先"
+        },
+        "dataairlock.autoBackup": {
+          "type": "boolean",
+          "default": true,
+          "description": "仮名化時に元データを自動でバックアップ"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "@vscode/test-electron": "^2.3.8",
+    "eslint": "^8.56.0",
+    "glob": "^10.3.10",
+    "mocha": "^10.2.0",
+    "typescript": "^5.3.3"
+  }
+}

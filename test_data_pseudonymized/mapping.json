@@ -1,0 +1,700 @@
+{
+  "version": "1.0.0",
+  "createdAt": "2026-02-01T07:26:06.861Z",
+  "updatedAt": "2026-02-01T07:26:06.861Z",
+  "sourceFolder": "/Users/akira/Projects/dataairlock-vscode/test_data",
+  "outputFolder": "/Users/akira/Projects/dataairlock-vscode/test_data_pseudonymized",
+  "entries": [
+    {
+      "placeholder": "岡田真一",
+      "original": "岡田真一",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/medical_records.json"
+    },
+    {
+      "placeholder": "03-4444-5555",
+      "original": "03-4444-5555",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/medical_records.json"
+    },
+    {
+      "placeholder": "shinichi.okada@patient.example.com",
+      "original": "shinichi.okada@patient.example.com",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/medical_records.json"
+    },
+    {
+      "placeholder": "東京都世田谷区三軒茶屋1-2-3"",
+      "original": "東京都世田谷区三軒茶屋1-2-3\"",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/medical_records.json"
+    },
+    {
+      "placeholder": "1970/06/1",
+      "original": "1970/06/1",
+      "type": "DOB",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/medical_records.json"
+    },
+    {
+      "placeholder": "7777-8888-9999",
+      "original": "7777-8888-9999",
+      "type": "MYNUMBER",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/medical_records.json"
+    },
+    {
+      "placeholder": "斎藤美穂",
+      "original": "斎藤美穂",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/medical_records.json"
+    },
+    {
+      "placeholder": "090-2222-3333",
+      "original": "090-2222-3333",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/medical_records.json"
+    },
+    {
+      "placeholder": "miho.saito@patient.example.com",
+      "original": "miho.saito@patient.example.com",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/medical_records.json"
+    },
+    {
+      "placeholder": "神奈川県相模原市中央区相模原4-5-6"",
+      "original": "神奈川県相模原市中央区相模原4-5-6\"",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/medical_records.json"
+    },
+    {
+      "placeholder": "平成元年",
+      "original": "平成元年",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/medical_records.json"
+    },
+    {
+      "placeholder": "2222-3333-4444",
+      "original": "2222-3333-4444",
+      "type": "MYNUMBER",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/medical_records.json"
+    },
+    {
+      "placeholder": "電話番号",
+      "original": "電話番号",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "生年月日",
+      "original": "生年月日",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "山田太郎",
+      "original": "山田太郎",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "03-1234-5678",
+      "original": "03-1234-5678",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "東京都新宿区西新宿1-2-3",
+      "original": "東京都新宿区西新宿1-2-3",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "1985/04/1",
+      "original": "1985/04/1",
+      "type": "DOB",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "1234-5678-9012",
+      "original": "1234-5678-9012",
+      "type": "MYNUMBER",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "鈴木花子",
+      "original": "鈴木花子",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "090-9876-5432",
+      "original": "090-9876-5432",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "神奈川県横浜市中区本町4-5-6",
+      "original": "神奈川県横浜市中区本町4-5-6",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "昭和63年8月20日",
+      "original": "昭和63年8月20日",
+      "type": "DOB",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "9876-5432-1098",
+      "original": "9876-5432-1098",
+      "type": "MYNUMBER",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "佐藤一郎",
+      "original": "佐藤一郎",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "045-111-2222",
+      "original": "045-111-2222",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "大阪府大阪市北区梅田7-8-9",
+      "original": "大阪府大阪市北区梅田7-8-9",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "平成2年12月1日",
+      "original": "平成2年12月1日",
+      "type": "DOB",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "5555-6666-7777",
+      "original": "5555-6666-7777",
+      "type": "MYNUMBER",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "田中美咲",
+      "original": "田中美咲",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "080-3333-4444",
+      "original": "080-3333-4444",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "〒150-0001",
+      "original": "〒150-0001",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "東京都渋谷区神宮前10-11-12",
+      "original": "東京都渋谷区神宮前10-11-12",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "1992/07/3",
+      "original": "1992/07/3",
+      "type": "DOB",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "1111-2222-3333",
+      "original": "1111-2222-3333",
+      "type": "MYNUMBER",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "伊藤健太",
+      "original": "伊藤健太",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "06-5555-6666",
+      "original": "06-5555-6666",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": ",愛知県名古屋市中村区名駅13-14-15",
+      "original": ",愛知県名古屋市中村区名駅13-14-15",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "平成5年3月25日",
+      "original": "平成5年3月25日",
+      "type": "DOB",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "4444-5555-6666",
+      "original": "4444-5555-6666",
+      "type": "MYNUMBER",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/patients/patient_list.csv"
+    },
+    {
+      "placeholder": "2024-01-1",
+      "original": "2024-01-1",
+      "type": "DOB",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "吉田健一",
+      "original": "吉田健一",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "yoshida.kenichi@security.example.com",
+      "original": "yoshida.kenichi@security.example.com",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "03-8888-9999",
+      "original": "03-8888-9999",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "井上恵美様",
+      "original": "井上恵美様",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "080-6666-7777",
+      "original": "080-6666-7777",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "emi.inoue@customer.example.com",
+      "original": "emi.inoue@customer.example.com",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "個人情報",
+      "original": "個人情報",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "〒160-0022",
+      "original": "〒160-0022",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "東京都新宿区新宿3-4-5",
+      "original": "東京都新宿区新宿3-4-5",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "6666-7777-8888",
+      "original": "6666-7777-8888",
+      "type": "MYNUMBER",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "1988/02/2",
+      "original": "1988/02/2",
+      "type": "DOB",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "対応状況",
+      "original": "対応状況",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "対応完了",
+      "original": "対応完了",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "2024-01-1",
+      "original": "2024-01-1",
+      "type": "DOB",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "藤井陽子",
+      "original": "藤井陽子",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "yoko.fujii@security.example.com",
+      "original": "yoko.fujii@security.example.com",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "090-3333-4444",
+      "original": "090-3333-4444",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "西村太一様",
+      "original": "西村太一様",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "nishimura.taichi@user.example.com",
+      "original": "nishimura.taichi@user.example.com",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "西村様電話",
+      "original": "西村様電話",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "06-2222-3333",
+      "original": "06-2222-3333",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "大阪府堺市堺区南瓦町7-8-9",
+      "original": "大阪府堺市堺区南瓦町7-8-9",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "対応状況",
+      "original": "対応状況",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "復旧完了",
+      "original": "復旧完了",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/incident_log.txt"
+    },
+    {
+      "placeholder": "月次報告書",
+      "original": "月次報告書",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "担当者情報",
+      "original": "担当者情報",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "森田浩二",
+      "original": "森田浩二",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "morita.koji@report.example.com",
+      "original": "morita.koji@report.example.com",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "03-6666-7777",
+      "original": "03-6666-7777",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "顧客対応記録",
+      "original": "顧客対応記録",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "村拓哉様
+電話番号",
+      "original": "村拓哉様\n電話番号",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "090-5555-6666",
+      "original": "090-5555-6666",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "takuya.kimura@client.example.com",
+      "original": "takuya.kimura@client.example.com",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "東京都港区六本木1-1-1",
+      "original": "東京都港区六本木1-1-1",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "対応内容",
+      "original": "対応内容",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "電話連絡",
+      "original": "電話連絡",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "契約更新",
+      "original": "契約更新",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "1234-1234-1234",
+      "original": "1234-1234-1234",
+      "type": "MYNUMBER",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "1978/11/1",
+      "original": "1978/11/1",
+      "type": "DOB",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "本恵子様
+電話番号",
+      "original": "本恵子様\n電話番号",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "080-8888-9999",
+      "original": "080-8888-9999",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "keiko.matsumoto@client2.example.com",
+      "original": "keiko.matsumoto@client2.example.com",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "〒530-0001",
+      "original": "〒530-0001",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "大阪府大阪市北区梅田2-2-2",
+      "original": "大阪府大阪市北区梅田2-2-2",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "対応内容",
+      "original": "対応内容",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "新規契約",
+      "original": "新規契約",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "昭和55年5月5日",
+      "original": "昭和55年5月5日",
+      "type": "DOB",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "山本和也様",
+      "original": "山本和也様",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "yamamoto.kazuya@newclient.example.com",
+      "original": "yamamoto.kazuya@newclient.example.com",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "06-1111-2222",
+      "original": "06-1111-2222",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "新規顧客",
+      "original": "新規顧客",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/reports/monthly_report.md"
+    },
+    {
+      "placeholder": "社員名簿",
+      "original": "社員名簿",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "高橋直樹
+電話",
+      "original": "高橋直樹\n電話",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "03-9999-8888",
+      "original": "03-9999-8888",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "naoki.takahashi@example.com",
+      "original": "naoki.takahashi@example.com",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "東京都品川区大崎1-2-3",
+      "original": "東京都品川区大崎1-2-3",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "渡辺明美
+電話",
+      "original": "渡辺明美\n電話",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "090-1111-2222",
+      "original": "090-1111-2222",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "akemi.watanabe@company.co.jp",
+      "original": "akemi.watanabe@company.co.jp",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "千葉県千葉市中央区本千葉町4-5-6",
+      "original": "千葉県千葉市中央区本千葉町4-5-6",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "中村大輔
+電話",
+      "original": "中村大輔\n電話",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "080-7777-8888",
+      "original": "080-7777-8888",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "daisuke.nakamura@techcorp.jp",
+      "original": "daisuke.nakamura@techcorp.jp",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "埼玉県さいたま市浦和区高砂7-8-9",
+      "original": "埼玉県さいたま市浦和区高砂7-8-9",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "小林由美
+電話",
+      "original": "小林由美\n電話",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "070-4444-5555",
+      "original": "070-4444-5555",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "yumi.kobayashi@dev.example.org",
+      "original": "yumi.kobayashi@dev.example.org",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "神奈川県川崎市川崎区駅前本町10-11-12",
+      "original": "神奈川県川崎市川崎区駅前本町10-11-12",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "加藤誠
+電話",
+      "original": "加藤誠\n電話",
+      "type": "NAME",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "03-2222-3333",
+      "original": "03-2222-3333",
+      "type": "PHONE",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "makoto.kato@admin.example.com",
+      "original": "makoto.kato@admin.example.com",
+      "type": "EMAIL",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "〒100-0001",
+      "original": "〒100-0001",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    },
+    {
+      "placeholder": "東京都千代田区丸の内13-14-15",
+      "original": "東京都千代田区丸の内13-14-15",
+      "type": "ADDRESS",
+      "sourceFile": "/Users/akira/Projects/dataairlock-vscode/test_data/staff/employees.txt"
+    }
+  ]
+}

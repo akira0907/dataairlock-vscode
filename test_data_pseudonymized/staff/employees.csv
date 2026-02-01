@@ -1,0 +1,11 @@
+部署,氏名,電話番号,メール,住所
+営業部,高橋直樹
+電話,03-9999-8888,naoki.takahashi@example.com,東京都品川区大崎1-2-3
+営業部,渡辺明美
+電話,090-1111-2222,akemi.watanabe@company.co.jp,千葉県千葉市中央区本千葉町4-5-6
+開発部,中村大輔
+電話,080-7777-8888,daisuke.nakamura@techcorp.jp,埼玉県さいたま市浦和区高砂7-8-9
+開発部,小林由美
+電話,070-4444-5555,yumi.kobayashi@dev.example.org,神奈川県川崎市川崎区駅前本町10-11-12
+総務部,加藤誠
+電話,03-2222-3333,makoto.kato@admin.example.com,"〒100-0001 東京都千代田区丸の内13-14-15"

@@ -1,0 +1,24 @@
+{
+  "records": [
+    {
+      "id": "MR001",
+      "patient_name": "岡田真一",
+      "phone": "03-4444-5555",
+      "email": "shinichi.okada@patient.example.com",
+      "address": "東京都世田谷区三軒茶屋1-2-3",
+      "dob": "1970/06/15",
+      "my_number": "7777-8888-9999",
+      "diagnosis": "高血圧"
+    },
+    {
+      "id": "MR002",
+      "patient_name": "斎藤美穂",
+      "phone": "090-2222-3333",
+      "email": "miho.saito@patient.example.com",
+      "address": "神奈川県相模原市中央区相模原4-5-6",
+      "dob": "平成元年9月23日",
+      "my_number": "2222-3333-4444",
+      "diagnosis": "糖尿病"
+    }
+  ]
+}
