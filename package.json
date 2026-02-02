@@ -1,7 +1,7 @@
 {
   "name": "dataairlock",
   "displayName": "DataAirlock",
-  "description": "Japanese PII pseudonymization for VSCode - ローカルで個人情報を仮名化",
+  "description": "Japanese PII pseudonymization for VSCode - Safely use Claude Code with sensitive data",
   "version": "1.0.1",
   "publisher": "dataairlock",
   "repository": {
