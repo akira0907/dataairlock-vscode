@@ -370,7 +370,7 @@ async function deanonymizeFolder(
         canSelectFiles: false,
         canSelectFolders: true,
         canSelectMany: false,
-        title: '復元するフォルダを選択（mapping.jsonを含むフォルダ）',
+        title: '復元するフォルダを選択（airlock配下の仮名化フォルダ）',
       });
       if (!selected || selected.length === 0) {
         return;
@@ -382,7 +382,7 @@ async function deanonymizeFolder(
     const hasMappingFile = await MappingStorage.mappingExists(folderPath);
     if (!hasMappingFile) {
       vscode.window.showErrorMessage(
-        `DataAirlock: mapping.json が見つかりません。仮名化されたフォルダを選択してください。`
+        `DataAirlock: mapping が見つかりません。airlock配下の仮名化フォルダ（またはその配下のフォルダ）を選択してください。`
       );
       return;
     }

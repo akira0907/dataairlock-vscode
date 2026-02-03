@@ -35,6 +35,42 @@ export class MappingStorage {
   private static readonly VERSION = '1.0.0';
 
   /**
+   * 既存のマッピングパスを探索（フォルダを上に辿る）
+   * - airlock/<SOURCE>/sub/... を指定しても airlock/.mapping/<SOURCE>.json を解決できるようにする
+   */
+  private static async findExistingMappingPath(folderPath: string): Promise<string | undefined> {
+    let current = folderPath;
+
+    while (true) {
+      const airlockBase = path.dirname(current);
+      const folderName = path.basename(current);
+      const newMappingPath = path.join(airlockBase, this.MAPPING_FOLDER, `${folderName}.json`);
+      try {
+        await fs.promises.access(newMappingPath);
+        return newMappingPath;
+      } catch {
+        // ignore
+      }
+
+      const oldMappingPath = path.join(current, this.MAPPING_FILENAME);
+      try {
+        await fs.promises.access(oldMappingPath);
+        return oldMappingPath;
+      } catch {
+        // ignore
+      }
+
+      const parent = path.dirname(current);
+      if (parent === current) {
+        break;
+      }
+      current = parent;
+    }
+
+    return undefined;
+  }
+
+  /**
    * マッピングをJSONファイルに保存
    * mapping.jsonは .mapping/ フォルダに保存（Claudeから隠すため）
    */
@@ -134,23 +170,8 @@ export class MappingStorage {
    * 新旧両方の配置場所をチェック（後方互換性）
    */
   static async mappingExists(folderPath: string): Promise<boolean> {
-    // 新しい配置場所をチェック: airlock/.mapping/フォルダ名.json
-    const airlockBase = path.dirname(folderPath);
-    const folderName = path.basename(folderPath);
-    const newMappingPath = path.join(airlockBase, this.MAPPING_FOLDER, `${folderName}.json`);
-    try {
-      await fs.promises.access(newMappingPath);
-      return true;
-    } catch {
-      // 旧配置場所もチェック: フォルダ内のmapping.json
-      const oldMappingPath = path.join(folderPath, this.MAPPING_FILENAME);
-      try {
-        await fs.promises.access(oldMappingPath);
-        return true;
-      } catch {
-        return false;
-      }
-    }
+    const existing = await this.findExistingMappingPath(folderPath);
+    return existing !== undefined;
   }
 
   /**
@@ -158,24 +179,15 @@ export class MappingStorage {
    * 新旧両方の配置場所をチェック（後方互換性）
    */
   static async getMappingPathAsync(folderPath: string): Promise<string> {
-    // 新しい配置場所をチェック: airlock/.mapping/フォルダ名.json
+    const existing = await this.findExistingMappingPath(folderPath);
+    if (existing) {
+      return existing;
+    }
+
+    // 存在しない場合は、指定フォルダに対する「新しい配置場所」を返す（保存先推定用途）
     const airlockBase = path.dirname(folderPath);
     const folderName = path.basename(folderPath);
-    const newMappingPath = path.join(airlockBase, this.MAPPING_FOLDER, `${folderName}.json`);
-    try {
-      await fs.promises.access(newMappingPath);
-      return newMappingPath;
-    } catch {
-      // 旧配置場所もチェック: フォルダ内のmapping.json
-      const oldMappingPath = path.join(folderPath, this.MAPPING_FILENAME);
-      try {
-        await fs.promises.access(oldMappingPath);
-        return oldMappingPath;
-      } catch {
-        // 存在しない場合は新しい配置場所を返す
-        return newMappingPath;
-      }
-    }
+    return path.join(airlockBase, this.MAPPING_FOLDER, `${folderName}.json`);
   }
 
   /**
