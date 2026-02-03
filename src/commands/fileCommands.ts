@@ -538,10 +538,68 @@ async function applyMapping(
       isFolder = choice.value === 'folder';
     }
 
+    const exists = async (p: string): Promise<boolean> => {
+      try {
+        await fs.promises.access(p);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    const listMappingFilesInDir = async (dirPath: string): Promise<string[]> => {
+      try {
+        const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
+        return entries
+          .filter((e) => e.isFile() && e.name.toLowerCase().endsWith('.json'))
+          .map((e) => path.join(dirPath, e.name));
+      } catch {
+        return [];
+      }
+    };
+
     // マッピングファイルを選択
     const backups = await BackupService.listBackups();
 
     const mappingChoices: Array<{ label: string; description: string; mappingPath: string }> = [];
+
+    // まずは対象パスからマッピングを自動検出（airlock/.mapping/<SOURCE>.json を上に辿って探索）
+    const targetDirForMapping = isFolder ? targetPath : path.dirname(targetPath);
+    if (await MappingStorage.mappingExists(targetDirForMapping)) {
+      const inferred = await MappingStorage.getMappingPathAsync(targetDirForMapping);
+      if (await exists(inferred)) {
+        mappingChoices.push({
+          label: '$(sparkle) 自動検出（推奨）',
+          description: inferred,
+          mappingPath: inferred,
+        });
+      }
+    }
+
+    // ワークスペース内の airlock/.mapping を一覧に追加（.mapping がファイル選択ダイアログで見えない問題回避）
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (workspaceFolders && workspaceFolders.length > 0) {
+      const config = vscode.workspace.getConfiguration('dataairlock');
+      const airlockFolderName = config.get<string>('airlockFolderName', 'airlock');
+      const workspaceRoot = workspaceFolders[0].uri.fsPath;
+
+      // 将来の互換性のため `.mapping` と `mapping` の両方を探索
+      const candidateDirs = [
+        path.join(workspaceRoot, airlockFolderName, '.mapping'),
+        path.join(workspaceRoot, airlockFolderName, 'mapping'),
+      ];
+
+      for (const dir of candidateDirs) {
+        const mappingFiles = await listMappingFilesInDir(dir);
+        for (const mp of mappingFiles) {
+          mappingChoices.push({
+            label: `$(symbol-key) ${path.basename(mp)}`,
+            description: mp,
+            mappingPath: mp,
+          });
+        }
+      }
+    }
 
     // バックアップからのマッピング
     for (const backup of backups.slice(0, 5)) {
@@ -561,6 +619,12 @@ async function applyMapping(
       label: '$(file) mapping.jsonを選択...',
       description: 'カスタムマッピングファイルを指定',
       mappingPath: '',
+    });
+
+    mappingChoices.push({
+      label: '$(pencil) パスを入力...',
+      description: '.mapping が見えない場合はこちら（例: /path/to/airlock/.mapping/input.json）',
+      mappingPath: '__INPUT__',
     });
 
     if (mappingChoices.length === 1) {
@@ -589,6 +653,19 @@ async function applyMapping(
     }
 
     let mappingPath = mappingChoice.mappingPath;
+
+    if (mappingPath === '__INPUT__') {
+      const input = await vscode.window.showInputBox({
+        title: 'mapping.json のパスを入力',
+        prompt: '例: /path/to/airlock/.mapping/input.json',
+        ignoreFocusOut: true,
+      });
+
+      if (!input) {
+        return;
+      }
+      mappingPath = input.trim();
+    }
 
     if (!mappingPath) {
       // カスタムマッピングファイル選択
