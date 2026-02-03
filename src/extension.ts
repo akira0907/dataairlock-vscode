@@ -178,7 +178,9 @@ function updatePatternSettings(
   ];
 
   for (const { key, type } of patternTypes) {
-    const enabled = config.get<boolean>(key, true);
+    // DOBはデフォルト無効（誤検出防止のため）
+    const defaultValue = type === PIIType.DOB ? false : true;
+    const enabled = config.get<boolean>(key, defaultValue);
     registry.setEnabled(type, enabled);
   }
 }

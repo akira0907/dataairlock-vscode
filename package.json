@@ -2,7 +2,7 @@
   "name": "dataairlock",
   "displayName": "DataAirlock",
   "description": "Japanese PII pseudonymization for VSCode - Safely use Claude Code with sensitive data",
-  "version": "1.0.2",
+  "version": "1.1.3",
   "publisher": "dataairlock",
   "repository": {
     "type": "git",
@@ -163,8 +163,8 @@
         },
         "dataairlock.patterns.dob.enabled": {
           "type": "boolean",
-          "default": true,
-          "description": "Enable birthdate detection (生年月日の検出)"
+          "default": false,
+          "description": "Enable birthdate detection (生年月日の検出) - デフォルト無効: 有効にすると「生年月日」等のコンテキストがある日付のみ検出"
         },
         "dataairlock.highlightColor": {
           "type": "string",
@@ -178,13 +178,39 @@
         },
         "dataairlock.fileExtensions": {
           "type": "array",
-          "default": [".txt", ".md", ".csv", ".json", ".xml", ".html", ".htm", ".log", ".py", ".js", ".ts", ".jsx", ".tsx", ".java", ".c", ".cpp", ".h", ".rb", ".go", ".rs", ".swift"],
-          "description": "ファイル/フォルダ仮名化の対象拡張子"
+          "default": [
+            ".txt",
+            ".md",
+            ".csv",
+            ".json",
+            ".xml",
+            ".html",
+            ".htm",
+            ".log",
+            ".py",
+            ".js",
+            ".ts",
+            ".jsx",
+            ".tsx",
+            ".java",
+            ".c",
+            ".cpp",
+            ".h",
+            ".rb",
+            ".go",
+            ".rs",
+            ".swift",
+            ".xlsx",
+            ".xls",
+            ".yaml",
+            ".yml"
+          ],
+          "description": "ファイル/フォルダ仮名化の対象拡張子（Excel/YAML含む）"
         },
-        "dataairlock.outputFolderSuffix": {
+        "dataairlock.airlockFolderName": {
           "type": "string",
-          "default": "_pseudonymized",
-          "description": "出力フォルダ名のサフィックス"
+          "default": "airlock",
+          "description": "仮名化データの出力先フォルダ名（ワークスペースルート直下に作成）"
         },
         "dataairlock.backupDirectory": {
           "type": "string",
@@ -219,5 +245,8 @@
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
   }
 }

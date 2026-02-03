@@ -25,7 +25,7 @@ DataAirlock helps you safely work with Claude Code on data containing personally
 
 ### Claude Code Integration
 - **Safe Backup** — Original data moved to `~/DataAirlock/backups/`
-- **`.claudeignore` Generation** — Automatically hide original folders from Claude
+- **`.ignore` / `.claudeignore` Generation** — Automatically hide original folders and mappings
 - **Output Restoration** — Apply mappings to Claude-generated files
 
 ---

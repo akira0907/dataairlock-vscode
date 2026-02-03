@@ -5,6 +5,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import ExcelJS from 'exceljs';
 import { FileProcessor } from '../services/fileProcessor';
 import { MappingStorage } from '../services/mappingStorage';
 import { BackupService } from '../services/backupService';
@@ -156,14 +157,23 @@ async function anonymizeFolder(
       folderPath = selected[0].fsPath;
     }
 
-    // 出力先を選択
+    // 出力先を選択（airlock方式）
     const config = vscode.workspace.getConfiguration('dataairlock');
-    const suffix = config.get<string>('outputFolderSuffix', '_pseudonymized');
-    const defaultOutput = folderPath + suffix;
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+
+    if (!workspaceFolders || workspaceFolders.length === 0) {
+      vscode.window.showErrorMessage('DataAirlock: ワークスペースが開かれていません');
+      return;
+    }
+
+    const airlockFolderName = config.get<string>('airlockFolderName', 'airlock');
+    const airlockBase = path.join(workspaceFolders[0].uri.fsPath, airlockFolderName);
+    const folderName = path.basename(folderPath);
+    const defaultOutput = path.join(airlockBase, folderName);
 
     const outputChoice = await vscode.window.showQuickPick(
       [
-        { label: '自動（同階層に出力）', description: defaultOutput, value: 'auto' },
+        { label: '自動（airlockフォルダに出力）', description: defaultOutput, value: 'auto' },
         { label: '出力先を選択...', description: 'カスタム出力先を指定', value: 'custom' },
       ],
       { placeHolder: '出力先を選択してください' }
@@ -184,9 +194,8 @@ async function anonymizeFolder(
       if (!customOutput || customOutput.length === 0) {
         return;
       }
-      // 選択したフォルダ内に、元フォルダ名+suffixで作成
-      const folderName = path.basename(folderPath);
-      outputPath = path.join(customOutput[0].fsPath, folderName + suffix);
+      // 選択したフォルダ内に、元フォルダ名で作成
+      outputPath = path.join(customOutput[0].fsPath, folderName);
     }
 
     // バックアップオプションを確認
@@ -201,8 +210,8 @@ async function anonymizeFolder(
           value: 'backup',
         },
         {
-          label: '$(eye-closed) 元データを残す（.claudeignoreで隠す）',
-          description: 'Claudeからは見えなくなりますが完全ではありません',
+          label: '$(eye-closed) 元データを残す（.ignore/.claudeignoreで隠す）',
+          description: 'Claude/検索ツールから見えにくくなりますが完全ではありません',
           value: 'keep',
         },
       ],
@@ -216,7 +225,7 @@ async function anonymizeFolder(
     // 確認ダイアログ
     const confirmMessage = backupChoice.value === 'backup'
       ? `DataAirlock: フォルダを仮名化しますか？\n入力: ${folderPath}\n出力: ${outputPath}\n\n※ 元データは ${backupDir} に移動されます`
-      : `DataAirlock: フォルダを仮名化しますか？\n入力: ${folderPath}\n出力: ${outputPath}\n\n※ 元データは.claudeignoreで隠されます`;
+      : `DataAirlock: フォルダを仮名化しますか？\n入力: ${folderPath}\n出力: ${outputPath}\n\n※ 元データは.ignore/.claudeignoreで隠されます`;
 
     const confirm = await vscode.window.showWarningMessage(
       confirmMessage,
@@ -257,13 +266,13 @@ async function anonymizeFolder(
               backupMessage = `\n元データ: ${backupDir} に退避済み`;
             } else {
               backupMessage = '\n※ バックアップに失敗しました（元データはそのまま）';
-              // バックアップ失敗時は.claudeignoreを生成
+              // バックアップ失敗時は.ignore/.claudeignoreを生成
               await generateClaudeignore(folderPath, result.outputPath);
             }
           } else {
-            // .claudeignoreを生成（元フォルダをClaudeから隠す）
+            // .ignore/.claudeignoreを生成（元フォルダをClaude/検索ツールから隠す）
             await generateClaudeignore(folderPath, result.outputPath);
-            backupMessage = '\n※ .claudeignoreを生成しました';
+            backupMessage = '\n※ .ignore/.claudeignoreを生成しました';
           }
 
           const message = `仮名化完了: ${result.filesProcessed}ファイル処理、${result.piiFound}件のPIIを検出`;
@@ -536,15 +545,13 @@ async function applyMapping(
 
     // バックアップからのマッピング
     for (const backup of backups.slice(0, 5)) {
-      const backupDir = BackupService.getBackupDirectory();
-      const mappingPath = path.join(backupDir, `${backup.projectName}_${backup.id}`, 'metadata.json');
-
       // pseudonymized folderのmapping.jsonを使用
       if (await MappingStorage.mappingExists(backup.pseudonymizedPath)) {
+        const mappingPath = await MappingStorage.getMappingPathAsync(backup.pseudonymizedPath);
         mappingChoices.push({
           label: `$(archive) ${backup.projectName}`,
           description: `${new Date(backup.createdAt).toLocaleString()} - ${backup.pseudonymizedPath}`,
-          mappingPath: MappingStorage.getMappingPath(backup.pseudonymizedPath),
+          mappingPath,
         });
       }
     }
@@ -656,10 +663,18 @@ async function applyMapping(
  * 単一ファイルにマッピングを適用
  */
 async function applyMappingToFile(
-  ctx: FileCommandContext,
+  _ctx: FileCommandContext,
   filePath: string,
   mapping: import('../types').SessionMapping
 ): Promise<number> {
+  const ext = path.extname(filePath).toLowerCase();
+
+  // Excelファイルの場合は専用処理
+  if (ext === '.xlsx' || ext === '.xls') {
+    return applyMappingToExcel(filePath, mapping);
+  }
+
+  // テキストファイルの場合
   const content = await fs.promises.readFile(filePath, 'utf-8');
 
   // プレースホルダーパターン
@@ -683,6 +698,49 @@ async function applyMappingToFile(
 }
 
 /**
+ * Excelファイルにマッピングを適用
+ */
+async function applyMappingToExcel(
+  filePath: string,
+  mapping: import('../types').SessionMapping
+): Promise<number> {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile(filePath);
+
+  // プレースホルダーパターン
+  const placeholderPattern = /\[(NAME|PHONE|EMAIL|ADDRESS|MYNUMBER|DOB)_\d{3}\]/g;
+
+  let replacedCount = 0;
+
+  // 全シートを処理
+  workbook.eachSheet((worksheet) => {
+    worksheet.eachRow((row) => {
+      row.eachCell((cell) => {
+        if (typeof cell.value === 'string') {
+          const newValue = cell.value.replace(placeholderPattern, (match) => {
+            const entry = mapping.entries.get(match);
+            if (entry) {
+              replacedCount++;
+              return entry.original;
+            }
+            return match;
+          });
+          if (newValue !== cell.value) {
+            cell.value = newValue;
+          }
+        }
+      });
+    });
+  });
+
+  if (replacedCount > 0) {
+    await workbook.xlsx.writeFile(filePath);
+  }
+
+  return replacedCount;
+}
+
+/**
  * フォルダにマッピングを適用
  */
 async function applyMappingToFolder(
@@ -695,6 +753,7 @@ async function applyMappingToFolder(
   const extensions = config.get<string[]>('fileExtensions', [
     '.txt', '.md', '.csv', '.json', '.xml', '.html', '.htm', '.log',
     '.js', '.ts', '.jsx', '.tsx', '.py', '.java', '.c', '.cpp', '.h',
+    '.rb', '.go', '.rs', '.swift', '.xlsx', '.xls', '.yaml', '.yml'
   ]);
 
   let filesProcessed = 0;
@@ -731,43 +790,73 @@ async function applyMappingToFolder(
 }
 
 /**
- * .claudeignoreを生成
- * 元フォルダ（個人情報を含む）をClaudeから隠す
+ * .ignore / .claudeignore を生成
+ * 元フォルダ（個人情報を含む）やマッピングをClaude/検索ツールから隠す
+ * ワークスペースルートに.ignore と .claudeignore を作成（後方互換のため両方）
  */
 async function generateClaudeignore(
   originalFolder: string,
-  outputFolder: string
+  _outputFolder: string
 ): Promise<void> {
   try {
-    // 出力フォルダの親ディレクトリに.claudeignoreを作成
-    const outputParent = path.dirname(outputFolder);
-    const claudeignorePath = path.join(outputParent, '.claudeignore');
-
-    // 元フォルダの相対パス
-    const originalRelative = path.relative(outputParent, originalFolder);
-
-    // 既存の.claudeignoreを読み込み
-    let existingContent = '';
-    try {
-      existingContent = await fs.promises.readFile(claudeignorePath, 'utf-8');
-    } catch {
-      // ファイルが存在しない場合は新規作成
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders || workspaceFolders.length === 0) {
+      return;
     }
 
-    // 既にエントリがあるかチェック
-    const lines = existingContent.split('\n').filter(line => line.trim());
-    const entry = originalRelative + '/';
+    // ワークスペースルートに.ignore / .claudeignoreを作成
+    const workspaceRoot = workspaceFolders[0].uri.fsPath;
+    const ignoreFilePaths = [
+      path.join(workspaceRoot, '.ignore'),
+      path.join(workspaceRoot, '.claudeignore'),
+    ];
 
-    if (!lines.includes(entry) && !lines.includes(originalRelative)) {
+    const normalizeIgnorePath = (p: string): string => p.replace(/\\/g, '/');
+    const ensureTrailingSlash = (p: string): string =>
+      p.endsWith('/') ? p : p + '/';
+
+    // mapping（元PIIを含む）をClaudeから隠す: airlock/.mapping/
+    const config = vscode.workspace.getConfiguration('dataairlock');
+    const airlockFolderName = config.get<string>('airlockFolderName', 'airlock');
+    const mappingRelative = ensureTrailingSlash(normalizeIgnorePath(path.join(airlockFolderName, '.mapping')));
+
+    // 元フォルダのワークスペースルートからの相対パス
+    const originalRelative = normalizeIgnorePath(path.relative(workspaceRoot, originalFolder));
+
+    const originalEntry = ensureTrailingSlash(originalRelative);
+
+    const entriesToEnsure = [mappingRelative, originalEntry];
+
+    for (const ignorePath of ignoreFilePaths) {
+      // 既存の ignore を読み込み
+      let existingContent = '';
+      try {
+        existingContent = await fs.promises.readFile(ignorePath, 'utf-8');
+      } catch {
+        // ファイルが存在しない場合は新規作成
+      }
+
+      // 既にエントリがあるかチェック
+      const lines = existingContent.split('\n').filter(line => line.trim());
+      const missingEntries = entriesToEnsure.filter((entry) => {
+        const trimmed = entry.replace(/[\\/]+$/, '');
+        return !lines.includes(entry) && !lines.includes(trimmed);
+      });
+
+      if (missingEntries.length === 0) {
+        continue;
+      }
+
       // エントリを追加
-      const header = '# DataAirlock: 仮名化前の個人情報フォルダ（Claudeからアクセス不可）\n';
+      const header = '# DataAirlock: 仮名化前データ/マッピング（アクセス不可にするための除外設定）\n';
+      const block = missingEntries.join('\n') + '\n';
       const newContent = existingContent
-        ? existingContent.trimEnd() + '\n' + entry + '\n'
-        : header + entry + '\n';
+        ? existingContent.trimEnd() + '\n' + block
+        : header + block;
 
-      await fs.promises.writeFile(claudeignorePath, newContent, 'utf-8');
+      await fs.promises.writeFile(ignorePath, newContent, 'utf-8');
     }
   } catch (error) {
-    console.error('DataAirlock: .claudeignore生成エラー:', error);
+    console.error('DataAirlock: ignore生成エラー:', error);
   }
 }
