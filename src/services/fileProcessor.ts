@@ -8,8 +8,26 @@ import * as vscode from 'vscode';
 import { PIIDetector } from '../core/piiDetector';
 import { Anonymizer } from '../core/anonymizer';
 import { Deanonymizer } from '../core/deanonymizer';
-import { SessionMapping, MappingEntry } from '../types';
+import { SessionMapping, MappingEntry, PIIType } from '../types';
 import { MappingStorage } from './mappingStorage';
+
+/**
+ * 名前の正規化（スペースを除去して比較用のキーを生成）
+ */
+function normalizeNameForLookup(value: string, type: PIIType): string {
+  if (type === PIIType.NAME) {
+    return value.replace(/[\s　]+/g, '');
+  }
+  return value;
+}
+
+/**
+ * YAMLファイルかどうかを判定
+ */
+function isYamlFile(filePath: string): boolean {
+  const ext = path.extname(filePath).toLowerCase();
+  return ext === '.yaml' || ext === '.yml';
+}
 
 /**
  * 処理結果
@@ -39,16 +57,31 @@ export class FileProcessor {
   private getTargetExtensions(): string[] {
     const config = vscode.workspace.getConfiguration('dataairlock');
     return config.get<string[]>('fileExtensions', [
-      '.txt', '.md', '.csv', '.json', '.xml', '.html', '.htm', '.log'
+      '.txt', '.md', '.csv', '.json', '.xml', '.html', '.htm', '.log',
+      '.js', '.ts', '.jsx', '.tsx', '.py', '.java', '.c', '.cpp', '.h',
+      '.rb', '.go', '.rs', '.swift', '.xlsx', '.xls', '.yaml', '.yml'
     ]);
   }
 
   /**
-   * 出力フォルダサフィックスを取得
+   * airlockベースパスを取得（ワークスペースルート/airlock）
    */
-  private getOutputSuffix(): string {
+  private getAirlockBasePath(): string {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders || workspaceFolders.length === 0) {
+      throw new Error('ワークスペースが開かれていません');
+    }
     const config = vscode.workspace.getConfiguration('dataairlock');
-    return config.get<string>('outputFolderSuffix', '_anonymized');
+    const airlockFolderName = config.get<string>('airlockFolderName', 'airlock');
+    return path.join(workspaceFolders[0].uri.fsPath, airlockFolderName);
+  }
+
+  /**
+   * ソースフォルダからairlock出力パスを計算
+   */
+  getAirlockOutputPath(sourceFolder: string): string {
+    const folderName = path.basename(sourceFolder);
+    return path.join(this.getAirlockBasePath(), folderName);
   }
 
   /**
@@ -73,7 +106,8 @@ export class FileProcessor {
       // 出力先フォルダを決定
       const sourceDir = path.dirname(sourcePath);
       const sourceFileName = path.basename(sourcePath);
-      const outputDir = outputFolder || sourceDir + this.getOutputSuffix();
+      const parentFolderName = path.basename(sourceDir);
+      const outputDir = outputFolder || path.join(this.getAirlockBasePath(), parentFolderName);
 
       // 出力フォルダを作成
       await fs.promises.mkdir(outputDir, { recursive: true });
@@ -94,19 +128,24 @@ export class FileProcessor {
 
       let outputContent = content;
       if (matches.length > 0) {
-        // 仮名化
+        // 仮名化（YAMLファイルの場合はクォート処理を有効化）
         const { result, newEntries } = this.anonymizer.anonymize(
           content,
           matches,
           mapping,
-          sourcePath
+          sourcePath,
+          isYamlFile(sourcePath)
         );
         outputContent = result;
 
-        // マッピングに追加
+        // マッピングに追加（正規化した値も登録）
         for (const entry of newEntries) {
           mapping.entries.set(entry.placeholder, entry);
           mapping.reverseIndex.set(entry.original, entry.placeholder);
+          const normalizedValue = normalizeNameForLookup(entry.original, entry.type as PIIType);
+          if (normalizedValue !== entry.original) {
+            mapping.reverseIndex.set(normalizedValue, entry.placeholder);
+          }
         }
       }
 
@@ -157,8 +196,9 @@ export class FileProcessor {
     let totalPiiFound = 0;
 
     try {
-      // 出力フォルダを作成
-      const outputFolder = customOutputPath || (sourceFolder + this.getOutputSuffix());
+      // 出力フォルダを作成（airlock/フォルダ名）
+      const folderName = path.basename(sourceFolder);
+      const outputFolder = customOutputPath || path.join(this.getAirlockBasePath(), folderName);
       await fs.promises.mkdir(outputFolder, { recursive: true });
 
       // 全ファイルを取得
@@ -175,12 +215,19 @@ export class FileProcessor {
         };
       }
 
-      // 共通マッピングを使用
-      const mapping: SessionMapping = {
-        entries: new Map(),
-        reverseIndex: new Map(),
-        counters: new Map(),
-      };
+      // 既存のmappingがあれば読み込んで再利用（同じ値には同じプレースホルダーを使用）
+      let mapping: SessionMapping;
+      const existingMappingExists = await MappingStorage.mappingExists(outputFolder);
+      if (existingMappingExists) {
+        const mappingPath = await MappingStorage.getMappingPathAsync(outputFolder);
+        mapping = await MappingStorage.loadMapping(mappingPath);
+      } else {
+        mapping = {
+          entries: new Map(),
+          reverseIndex: new Map(),
+          counters: new Map(),
+        };
+      }
 
       const incrementPerFile = 100 / targetFiles.length;
 
@@ -202,19 +249,25 @@ export class FileProcessor {
 
           let outputContent = content;
           if (matches.length > 0) {
-            // 仮名化
+            // 仮名化（YAMLファイルの場合はクォート処理を有効化）
             const { result, newEntries } = this.anonymizer.anonymize(
               content,
               matches,
               mapping,
-              filePath
+              filePath,
+              isYamlFile(filePath)
             );
             outputContent = result;
 
-            // マッピングに追加
+            // マッピングに追加（正規化した値も登録して同一人物の統一を図る）
             for (const entry of newEntries) {
               mapping.entries.set(entry.placeholder, entry);
               mapping.reverseIndex.set(entry.original, entry.placeholder);
+              // 名前の場合は正規化した値（スペース除去）も登録
+              const normalizedValue = normalizeNameForLookup(entry.original, entry.type as PIIType);
+              if (normalizedValue !== entry.original) {
+                mapping.reverseIndex.set(normalizedValue, entry.placeholder);
+              }
             }
           }
 
@@ -276,8 +329,8 @@ export class FileProcessor {
     try {
       // マッピングファイルを探す
       const sourceDir = path.dirname(sourcePath);
-      const actualMappingPath =
-        mappingPath || MappingStorage.getMappingPath(sourceDir);
+      const actualMappingPath = mappingPath ||
+        await MappingStorage.getMappingPathAsync(sourceDir);
 
       // マッピングを読み込み
       const mapping = await MappingStorage.loadMapping(actualMappingPath);
@@ -328,8 +381,7 @@ export class FileProcessor {
    */
   async deanonymizeFolder(
     folderPath: string,
-    progress?: vscode.Progress<{ message?: string; increment?: number }>,
-    renameFolder: boolean = true
+    progress?: vscode.Progress<{ message?: string; increment?: number }>
   ): Promise<ProcessResult> {
     const errors: string[] = [];
     let filesProcessed = 0;
@@ -337,7 +389,7 @@ export class FileProcessor {
 
     try {
       // マッピングを読み込み
-      const mappingPath = MappingStorage.getMappingPath(folderPath);
+      const mappingPath = await MappingStorage.getMappingPathAsync(folderPath);
       const mapping = await MappingStorage.loadMapping(mappingPath);
 
       // 全ファイルを取得
@@ -387,26 +439,14 @@ export class FileProcessor {
         }
       }
 
-      // フォルダ名を変更（_pseudonymized → _restored）
-      let finalOutputPath = folderPath;
-      if (renameFolder && totalRestored > 0) {
-        const suffix = this.getOutputSuffix();
-        if (folderPath.endsWith(suffix)) {
-          const newPath = folderPath.replace(suffix, '_restored');
-          try {
-            await fs.promises.rename(folderPath, newPath);
-            finalOutputPath = newPath;
-          } catch (renameError) {
-            errors.push(`フォルダ名の変更に失敗: ${renameError}`);
-          }
-        }
-      }
+      // airlock方式ではフォルダ名のリネームは不要
+      // （元のフォルダ名がそのまま使用される）
 
       return {
         success: errors.length === 0,
         filesProcessed,
         piiFound: totalRestored,
-        outputPath: finalOutputPath,
+        outputPath: folderPath,
         errors,
       };
     } catch (error) {

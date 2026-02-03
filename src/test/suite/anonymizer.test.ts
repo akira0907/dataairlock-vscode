@@ -114,6 +114,189 @@ suite('Anonymizer Test Suite', () => {
       assert.strictEqual(entries2.length, 0);
       assert.ok(result2.includes('[PHONE_001]'));
     });
+
+    suite('YAMLクォート処理', () => {
+      test('値がプレースホルダーから始まる場合は値全体をクォート（構文エラー回避）', () => {
+        const text = '担当者: 田中太郎（放射線診断）';
+        const mapping = createEmptyMapping();
+        const matches = detector.detect(text);
+        const { result } = anonymizer.anonymize(
+          text,
+          matches,
+          mapping,
+          'test://doc',
+          true
+        );
+
+        assert.strictEqual(result, '担当者: "[NAME_001]（放射線診断）"');
+        assert.ok(!result.includes('""[NAME_001]"'), 'プレースホルダーだけにクォートを付けない');
+      });
+
+      test('既にクォートされている値はそのまま（追加クォートしない）', () => {
+        const text = '担当者: "田中太郎（放射線診断）"';
+        const mapping = createEmptyMapping();
+        const matches = detector.detect(text);
+        const { result } = anonymizer.anonymize(
+          text,
+          matches,
+          mapping,
+          'test://doc',
+          true
+        );
+
+        assert.strictEqual(result, '担当者: "[NAME_001]（放射線診断）"');
+      });
+
+      test('flow sequence の要素がプレースホルダーから始まる場合は要素をクォート（型崩れ防止）', () => {
+        const text = 'names: [田中太郎, 鈴木花子]';
+        const mapping = createEmptyMapping();
+        const matches = detector.detect(text);
+        const { result } = anonymizer.anonymize(
+          text,
+          matches,
+          mapping,
+          'test://doc',
+          true
+        );
+
+        assert.strictEqual(result, 'names: ["[NAME_001]", "[NAME_002]"]');
+      });
+
+      test('値の途中に現れるプレースホルダーはクォートしない（プレーンスカラーとして安全）', () => {
+        const text = 'note: 患者は田中太郎です';
+        const mapping = createEmptyMapping();
+        const matches = detector.detect(text);
+        const { result } = anonymizer.anonymize(
+          text,
+          matches,
+          mapping,
+          'test://doc',
+          true
+        );
+
+        assert.strictEqual(result, 'note: 患者は[NAME_001]です');
+      });
+
+      test('インラインコメントを保持して値だけをクォート', () => {
+        const text = 'name: 田中太郎 # コメント';
+        const mapping = createEmptyMapping();
+        const matches = detector.detect(text);
+        const { result } = anonymizer.anonymize(
+          text,
+          matches,
+          mapping,
+          'test://doc',
+          true
+        );
+
+        assert.strictEqual(result, 'name: "[NAME_001]" # コメント');
+      });
+
+      test('ブロックスカラー(|/>)の内容行はクォートしない', () => {
+        const text = 'notes: |\n  田中太郎（放射線診断）';
+        const mapping = createEmptyMapping();
+        const matches = detector.detect(text);
+        const { result } = anonymizer.anonymize(
+          text,
+          matches,
+          mapping,
+          'test://doc',
+          true
+        );
+
+        assert.strictEqual(result, 'notes: |\n  [NAME_001]（放射線診断）');
+      });
+
+      test('キーがプレースホルダーから始まる場合はキーのみをクォート', () => {
+        const text = '田中太郎: value';
+        const mapping = createEmptyMapping();
+        const matches = detector.detect(text);
+        const { result } = anonymizer.anonymize(
+          text,
+          matches,
+          mapping,
+          'test://doc',
+          true
+        );
+
+        assert.strictEqual(result, '"[NAME_001]": value');
+      });
+
+      test('flow mapping の値がプレースホルダーから始まる場合は値をクォート', () => {
+        const text = 'person: {name: 田中太郎, phone: 090-1234-5678}';
+        const mapping = createEmptyMapping();
+        const matches = detector.detect(text);
+        const { result } = anonymizer.anonymize(
+          text,
+          matches,
+          mapping,
+          'test://doc',
+          true
+        );
+
+        assert.strictEqual(result, 'person: {name: "[NAME_001]", phone: "[PHONE_001]"}');
+      });
+
+      test('プレースホルダー単体の値もクォート', () => {
+        const text = 'name: 田中太郎';
+        const mapping = createEmptyMapping();
+        const matches = detector.detect(text);
+        const { result } = anonymizer.anonymize(
+          text,
+          matches,
+          mapping,
+          'test://doc',
+          true
+        );
+
+        assert.strictEqual(result, 'name: "[NAME_001]"');
+      });
+
+      test('リスト要素がプレースホルダーから始まる場合は要素をクォート', () => {
+        const text = '- 田中太郎（担当者）';
+        const mapping = createEmptyMapping();
+        const matches = detector.detect(text);
+        const { result } = anonymizer.anonymize(
+          text,
+          matches,
+          mapping,
+          'test://doc',
+          true
+        );
+
+        assert.strictEqual(result, '- "[NAME_001]（担当者）"');
+      });
+
+      test('isYamlFile=false の場合はクォートしない', () => {
+        const text = 'name: 田中太郎';
+        const mapping = createEmptyMapping();
+        const matches = detector.detect(text);
+        const { result } = anonymizer.anonymize(
+          text,
+          matches,
+          mapping,
+          'test://doc',
+          false
+        );
+
+        assert.strictEqual(result, 'name: [NAME_001]');
+      });
+
+      test('エスケープが必要な文字を含む値のクォート', () => {
+        const text = 'note: 田中太郎 said "hello"';
+        const mapping = createEmptyMapping();
+        const matches = detector.detect(text);
+        const { result } = anonymizer.anonymize(
+          text,
+          matches,
+          mapping,
+          'test://doc',
+          true
+        );
+
+        assert.strictEqual(result, 'note: "[NAME_001] said \\"hello\\""');
+      });
+    });
   });
 
   suite('復元', () => {

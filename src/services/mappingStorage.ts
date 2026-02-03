@@ -31,17 +31,26 @@ interface StoredMappingEntry {
  */
 export class MappingStorage {
   private static readonly MAPPING_FILENAME = 'mapping.json';
+  private static readonly MAPPING_FOLDER = '.mapping';
   private static readonly VERSION = '1.0.0';
 
   /**
    * マッピングをJSONファイルに保存
+   * mapping.jsonは .mapping/ フォルダに保存（Claudeから隠すため）
    */
   static async saveMapping(
     outputFolder: string,
     sourceFolder: string,
     mapping: SessionMapping
   ): Promise<string> {
-    const mappingPath = path.join(outputFolder, this.MAPPING_FILENAME);
+    // airlock直下に.mappingフォルダを作成
+    const airlockBase = path.dirname(outputFolder);
+    const mappingDir = path.join(airlockBase, this.MAPPING_FOLDER);
+    await fs.promises.mkdir(mappingDir, { recursive: true });
+
+    // フォルダ名をファイル名に使用
+    const folderName = path.basename(outputFolder);
+    const mappingPath = path.join(mappingDir, `${folderName}.json`);
 
     const storedMapping: StoredMapping = {
       version: this.VERSION,
@@ -97,6 +106,14 @@ export class MappingStorage {
       mapping.entries.set(entry.placeholder, entry);
       mapping.reverseIndex.set(entry.original, entry.placeholder);
 
+      // 名前の場合は正規化した値（スペース除去）も登録して同一人物を統一
+      if (stored.type === 'NAME') {
+        const normalized = entry.original.replace(/[\s　]+/g, '');
+        if (normalized !== entry.original) {
+          mapping.reverseIndex.set(normalized, entry.placeholder);
+        }
+      }
+
       // カウンターを更新（プレースホルダーから番号を抽出）
       const match = stored.placeholder.match(/\[([A-Z]+)_(\d+)\]/);
       if (match) {
@@ -114,21 +131,60 @@ export class MappingStorage {
 
   /**
    * マッピングファイルが存在するか確認
+   * 新旧両方の配置場所をチェック（後方互換性）
    */
   static async mappingExists(folderPath: string): Promise<boolean> {
-    const mappingPath = path.join(folderPath, this.MAPPING_FILENAME);
+    // 新しい配置場所をチェック: airlock/.mapping/フォルダ名.json
+    const airlockBase = path.dirname(folderPath);
+    const folderName = path.basename(folderPath);
+    const newMappingPath = path.join(airlockBase, this.MAPPING_FOLDER, `${folderName}.json`);
     try {
-      await fs.promises.access(mappingPath);
+      await fs.promises.access(newMappingPath);
       return true;
     } catch {
-      return false;
+      // 旧配置場所もチェック: フォルダ内のmapping.json
+      const oldMappingPath = path.join(folderPath, this.MAPPING_FILENAME);
+      try {
+        await fs.promises.access(oldMappingPath);
+        return true;
+      } catch {
+        return false;
+      }
     }
   }
 
   /**
-   * マッピングファイルのパスを取得
+   * マッピングファイルのパスを取得（非同期版）
+   * 新旧両方の配置場所をチェック（後方互換性）
+   */
+  static async getMappingPathAsync(folderPath: string): Promise<string> {
+    // 新しい配置場所をチェック: airlock/.mapping/フォルダ名.json
+    const airlockBase = path.dirname(folderPath);
+    const folderName = path.basename(folderPath);
+    const newMappingPath = path.join(airlockBase, this.MAPPING_FOLDER, `${folderName}.json`);
+    try {
+      await fs.promises.access(newMappingPath);
+      return newMappingPath;
+    } catch {
+      // 旧配置場所もチェック: フォルダ内のmapping.json
+      const oldMappingPath = path.join(folderPath, this.MAPPING_FILENAME);
+      try {
+        await fs.promises.access(oldMappingPath);
+        return oldMappingPath;
+      } catch {
+        // 存在しない場合は新しい配置場所を返す
+        return newMappingPath;
+      }
+    }
+  }
+
+  /**
+   * マッピングファイルのパスを取得（同期版、新しい配置場所を返す）
+   * @deprecated getMappingPathAsync を使用してください
    */
   static getMappingPath(folderPath: string): string {
-    return path.join(folderPath, this.MAPPING_FILENAME);
+    const airlockBase = path.dirname(folderPath);
+    const folderName = path.basename(folderPath);
+    return path.join(airlockBase, this.MAPPING_FOLDER, `${folderName}.json`);
   }
 }

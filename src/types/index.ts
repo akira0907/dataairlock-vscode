@@ -27,6 +27,8 @@ export interface PIIPattern {
   enabled: boolean;
   /** 優先度（低い数値が高優先、重複時に先にマッチしたものを優先） */
   priority: number;
+  /** コンテキストベースの検出を有効にする（特定のキーワードが近くにある場合のみ検出） */
+  contextRequired?: boolean;
 }
 
 /**
